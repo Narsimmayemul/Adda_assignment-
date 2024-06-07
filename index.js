@@ -42,9 +42,9 @@ const bookingCost = (facility, start, end) => {
     return cost;
 };
 
-// Serve the HTML form
 app.get('/', (req, res) => {
     res.send(`
+
         <h1>Facility Booking</h1>
         <form action="/book" method="post">
             <label for="facility">Facility:</label>
@@ -60,6 +60,8 @@ app.get('/', (req, res) => {
             <input type="text" id="end" name="end" required><br>
             <button type="submit">Book</button>
         </form>
+
+        <p>To get list of bookings you can visit "/list"</p>
     `);
 });
 
