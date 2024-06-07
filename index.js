@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const facilities = {
     'Clubhouse': {
@@ -42,15 +42,32 @@ const bookingCost = (facility, start, end) => {
     return cost;
 };
 
+// Serve the HTML form
 app.get('/', (req, res) => {
-    res.send('For booking you need to visit "/book"');
+    res.send(`
+        <h1>Facility Booking</h1>
+        <form action="/book" method="post">
+            <label for="facility">Facility:</label>
+            <select name="facility" id="facility">
+                <option value="Clubhouse">Clubhouse</option>
+                <option value="Tennis Court">Tennis Court</option>
+            </select><br>
+            <label for="date">Date (DD/MM/YYYY):</label>
+            <input type="text" id="date" name="date" required><br>
+            <label for="start">Start Time (HH:MM):</label>
+            <input type="text" id="start" name="start" required><br>
+            <label for="end">End Time (HH:MM):</label>
+            <input type="text" id="end" name="end" required><br>
+            <button type="submit">Book</button>
+        </form>
+    `);
 });
 
 app.get('/list', (req, res) => {
-    res.send(bookings);
+    res.json(bookings);
 });
 
-app.post('/book', (req, res) => {
+app.post('/book', express.urlencoded({ extended: true }), (req, res) => {
     const { facility, date, start, end } = req.body;
 
     if (!facility || !date || !start || !end) {
